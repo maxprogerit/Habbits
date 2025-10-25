@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Habit Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>
+                        Habit Tracker
+                    </h1>
+                </div>
+                <nav class="flex space-x-4">
+                    <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                    <a href="/analytics" class="text-blue-600 dark:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">Analytics</a>
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Analytics Overview</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Track your progress with detailed insights and visualizations.</p>
+        </div>
+
+        <!-- Habit Selection -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Select Habit for Detailed Analysis</h3>
+            </div>
+            <div class="p-6">
+                <select id="habit-selector" class="w-full md:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <option value="">Select a habit...</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Weekly Progress Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Weekly Progress</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="weeklyChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Progress Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Monthly Overview</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="monthlyChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habit Statistics -->
+        <div id="habit-stats" class="bg-white dark:bg-gray-800 rounded-lg shadow" style="display: none;">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Habit Statistics</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="total-completions">0</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Total Completions</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="weekly-percentage">0%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Weekly Success</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600" id="monthly-percentage">0%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Monthly Success</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-600" id="current-streak">0</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Current Streak</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/analytics.js"></script>
+</body>
+</html>

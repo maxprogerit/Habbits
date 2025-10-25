@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Habit Tracker",
+            "request": "launch",
+            "mainClass": "com.habittracker.HabitTrackerApplication",
+            "projectName": "habit-tracker",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Debug Spring Boot (Maven)",
+            "request": "launch",
+            "mainClass": "com.habittracker.HabitTrackerApplication",
+            "projectName": "habit-tracker",
+            "args": "--debug",
+            "vmArgs": "-Dspring-boot.run.jvmArguments='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'"
+        }
+    ]
+}
