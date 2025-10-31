@@ -1,186 +1,404 @@
-/* Dark Mode Configuration */
+/* Ferrari-inspired Habit Tracker Styles */
+
 :root {
+    --ferrari-red: #dc143c;
+    --ferrari-red-dark: #b01e37;
+    --ferrari-black: #1a1a1a;
+    --ferrari-white: #ffffff;
+    --ferrari-gray: #2d2d2d;
+    --ferrari-light-gray: #f5f5f5;
+    --ferrari-gold: #ffd700;
+    --ferrari-shadow: 0 4px 20px rgba(220, 20, 60, 0.15);
+    --ferrari-shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode variables (default) */
+:root,
+html:not(.dark),
+html.light {
     --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #333333;
+    --text-tertiary: #666666;
     --border-color: #e5e7eb;
+    --shadow: var(--ferrari-shadow);
 }
 
-[data-theme="dark"] {
-    --bg-primary: #1f2937;
-    --bg-secondary: #111827;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --border-color: #374151;
+/* Dark mode variables */
+html.dark {
+    --bg-primary: #111111;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #e5e5e5;
+    --text-tertiary: #b3b3b3;
+    --border-color: #404040;
+    --shadow: var(--ferrari-shadow-dark);
 }
 
-/* Custom Animations */
-.habit-item {
-    transition: all 0.3s ease;
+/* Ensure dark mode applies to body and main elements */
+html.dark body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
-.habit-item:hover {
+/* Global styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ferrari-inspired gradients */
+.ferrari-gradient {
+    background: linear-gradient(135deg, var(--ferrari-red) 0%, var(--ferrari-red-dark) 100%);
+}
+
+.ferrari-gradient-subtle {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(176, 30, 55, 0.05) 100%);
+}
+
+/* Enhanced header */
+header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+/* Ferrari-inspired cards */
+.habit-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.habit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--ferrari-red);
+    transform: scaleY(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.habit-card:hover::before {
+    transform: scaleY(1);
+}
+
+.habit-card:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(220, 20, 60, 0.2);
 }
 
+.habit-card.completed {
+    background: var(--ferrari-gradient-subtle);
+    border-color: var(--ferrari-red);
+}
+
+.habit-card.completed::before {
+    transform: scaleY(1);
+    background: var(--ferrari-gold);
+}
+
+/* Enhanced checkboxes */
 .habit-toggle {
-    transition: all 0.2s ease;
+    width: 28px;
+    height: 28px;
+    appearance: none;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.habit-toggle:hover {
+    border-color: #10b981;
+    transform: scale(1.05);
 }
 
 .habit-toggle:checked {
-    background-color: #10b981;
+    background: linear-gradient(135deg, #10b981, #059669);
     border-color: #10b981;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
-.habit-toggle:checked:after {
-    transform: translateX(20px);
-    background-color: white;
-}
-
-.habit-toggle:after {
-    content: '';
+.habit-toggle:checked::before {
+    content: '✓';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background-color: #6b7280;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.habit-toggle {
-    appearance: none;
-    width: 48px;
-    height: 24px;
-    background-color: #d1d5db;
-    border: 2px solid #d1d5db;
-    border-radius: 12px;
-    position: relative;
-    cursor: pointer;
+.habit-toggle:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
 }
 
-/* Loading Animation */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(59, 130, 246, 0.3);
-    border-radius: 50%;
-    border-top-color: #3b82f6;
-    animation: spin 1s ease-in-out infinite;
+/* Checkbox animation */
+.habit-toggle:checked {
+    animation: checkboxBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Success Animation */
-.success-pulse {
-    animation: pulse 0.6s ease-in-out;
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
+@keyframes checkboxBounce {
+    0% {
         transform: scale(1);
     }
 
     50% {
-        transform: scale(1.05);
+        transform: scale(1.25);
+    }
+
+    100% {
+        transform: scale(1.1);
     }
 }
 
-/* Chart Container Styles */
-.chart-container {
+/* Ferrari-inspired buttons */
+.btn-ferrari {
+    background: var(--ferrari-gradient);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    height: 300px;
+    overflow: hidden;
+}
+
+.btn-ferrari::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.btn-ferrari:hover::before {
+    left: 100%;
+}
+
+.btn-ferrari:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+}
+
+.btn-ferrari:active {
+    transform: translateY(0);
+}
+
+/* Enhanced stats cards */
+.stats-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--ferrari-gradient);
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Form enhancements */
+.form-input {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-input:focus {
+    border-color: var(--ferrari-red);
+    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+    outline: none;
+}
+
+/* Theme toggle button */
+#theme-toggle {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#theme-toggle:hover {
+    background: var(--ferrari-red);
+    color: white;
+    border-color: var(--ferrari-red);
+}
+
+/* Navigation links */
+nav a {
+    color: var(--text-secondary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--ferrari-red);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav a:hover {
+    color: var(--ferrari-red);
+}
+
+nav a:hover::after {
     width: 100%;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
+/* Notification enhancements */
+.notification {
+    backdrop-filter: blur(10px);
+    border-left: 4px solid;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: #9ca3af;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-}
-
-/* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-track {
-    background: #374151;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background: #6b7280;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
-}
-
-/* Habit Card Styles */
-.habit-card {
-    border-left: 4px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.habit-card.completed {
+.notification.success {
     border-left-color: #10b981;
-    background-color: rgba(16, 185, 129, 0.05);
+    background: rgba(16, 185, 129, 0.1);
 }
 
-.habit-card:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.notification.error {
+    border-left-color: var(--ferrari-red);
+    background: rgba(220, 20, 60, 0.1);
 }
 
-.dark .habit-card:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+/* Completion celebration animation */
+.habit-completed-animation {
+    animation: celebrationPulse 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Button Hover Effects */
-.btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
-    transform: translateY(-1px);
-}
-
-/* Statistics Cards */
-.stat-card {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.dark .stat-card {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-    border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-/* Responsive Design */
-@media (max-width: 640px) {
-    .habit-card {
-        margin-bottom: 1rem;
+@keyframes celebrationPulse {
+    0% {
+        transform: scale(1);
     }
 
-    .grid-cols-1 {
-        gap: 1rem;
+    25% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+    }
+
+    75% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: var(--shadow);
+    }
+}
+
+/* Success notification improvements */
+.notification.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-left-color: #ffffff;
+    color: white;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.notification.error {
+    background: linear-gradient(135deg, var(--ferrari-red), var(--ferrari-red-dark));
+    border-left-color: #ffffff;
+    color: white;
+    box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+}
+
+/* Loading animation */
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--ferrari-red);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .habit-card {
+        margin-bottom: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* Performance optimizations */
+.habit-card,
+.stats-card,
+.btn-ferrari {
+    will-change: transform;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

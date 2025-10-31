@@ -34,13 +34,35 @@ class AnalyticsManager {
     }
 
     setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        const html = document.documentElement;
+
+        // Remove both classes first
+        html.classList.remove('dark', 'light');
+
+        // Add the current theme class
+        html.classList.add(theme);
+
+        // Also set data attribute for CSS
+        html.setAttribute('data-theme', theme);
+
+        // Save to localStorage
         localStorage.setItem('theme', theme);
+
+        // Update theme toggle icon
+        this.updateThemeToggleIcon(theme);
+    }
+
+    updateThemeToggleIcon(theme) {
+        const moonIcon = document.querySelector('#theme-toggle .fa-moon');
+        const sunIcon = document.querySelector('#theme-toggle .fa-sun');
+
+        if (theme === 'dark') {
+            if (moonIcon) moonIcon.style.display = 'none';
+            if (sunIcon) sunIcon.style.display = 'inline';
+        } else {
+            if (moonIcon) moonIcon.style.display = 'inline';
+            if (sunIcon) sunIcon.style.display = 'none';
+        }
     }
 
     toggleTheme() {
@@ -157,8 +179,8 @@ class AnalyticsManager {
                 datasets: [{
                     label: 'Completed',
                     data: weekData.data,
-                    backgroundColor: weekData.data.map(val => val ? '#10b981' : '#ef4444'),
-                    borderColor: weekData.data.map(val => val ? '#059669' : '#dc2626'),
+                    backgroundColor: weekData.data.map(val => val ? '#dc143c' : '#6b7280'),
+                    borderColor: weekData.data.map(val => val ? '#b01e37' : '#4b5563'),
                     borderWidth: 1
                 }]
             },

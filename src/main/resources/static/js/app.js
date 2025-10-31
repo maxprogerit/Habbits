@@ -33,13 +33,35 @@ class HabitTracker {
     }
 
     setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        const html = document.documentElement;
+
+        // Remove both classes first
+        html.classList.remove('dark', 'light');
+
+        // Add the current theme class
+        html.classList.add(theme);
+
+        // Also set data attribute for CSS
+        html.setAttribute('data-theme', theme);
+
+        // Save to localStorage
         localStorage.setItem('theme', theme);
+
+        // Update theme toggle icon
+        this.updateThemeToggleIcon(theme);
+    }
+
+    updateThemeToggleIcon(theme) {
+        const moonIcon = document.querySelector('#theme-toggle .fa-moon');
+        const sunIcon = document.querySelector('#theme-toggle .fa-sun');
+
+        if (theme === 'dark') {
+            if (moonIcon) moonIcon.style.display = 'none';
+            if (sunIcon) sunIcon.style.display = 'inline';
+        } else {
+            if (moonIcon) moonIcon.style.display = 'inline';
+            if (sunIcon) sunIcon.style.display = 'none';
+        }
     }
 
     toggleTheme() {
@@ -78,20 +100,18 @@ class HabitTracker {
 
         // Get today's logs
         const todayLogs = await this.getTodayLogs();
-        const logMap = new Map(todayLogs.map(log => [log.habit.id, log]));
-
-        habitsList.innerHTML = this.habits.map(habit => {
+        const logMap = new Map(todayLogs.map(log => [log.habit.id, log])); habitsList.innerHTML = this.habits.map(habit => {
             const log = logMap.get(habit.id);
             const isCompleted = log && log.completed;
 
             return `
-                <div class="habit-card ${isCompleted ? 'completed' : ''} bg-white dark:bg-gray-700 rounded-lg p-4 mb-4 border border-gray-200 dark:border-gray-600 transition-all duration-300">
+                <div class="habit-card ${isCompleted ? 'completed' : ''} rounded-lg p-4 mb-4 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
-                            <i class="${habit.icon || 'fas fa-check'} text-2xl text-blue-600"></i>
+                            <i class="${habit.icon || 'fas fa-check'} text-2xl" style="color: var(--ferrari-red);"></i>
                             <div>
-                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">${this.escapeHtml(habit.name)}</h3>
-                                ${habit.description ? `<p class="text-sm text-gray-500 dark:text-gray-400">${this.escapeHtml(habit.description)}</p>` : ''}
+                                <h3 class="text-lg font-medium" style="color: var(--text-primary);">${this.escapeHtml(habit.name)}</h3>
+                                ${habit.description ? `<p class="text-sm" style="color: var(--text-tertiary);">${this.escapeHtml(habit.description)}</p>` : ''}
                             </div>
                         </div>
                         <div class="flex items-center space-x-3">
@@ -101,7 +121,10 @@ class HabitTracker {
                                    data-habit-id="${habit.id}"
                                    onchange="habitTracker.toggleHabit(${habit.id}, this)">
                             <button onclick="habitTracker.deleteHabit(${habit.id})" 
-                                    class="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200">
+                                    class="p-2 rounded-md transition-colors duration-200"
+                                    style="color: var(--ferrari-red); border: 1px solid var(--border-color);"
+                                    onmouseover="this.style.backgroundColor='var(--ferrari-red)'; this.style.color='white';"
+                                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--ferrari-red)';">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -166,6 +189,12 @@ class HabitTracker {
     }
 
     async toggleHabit(habitId, checkbox) {
+        // Prevent double-clicking by disabling the checkbox temporarily
+        if (checkbox.disabled) {
+            return;
+        }
+
+        checkbox.disabled = true;
         const originalState = checkbox.checked;
 
         try {
@@ -174,6 +203,17 @@ class HabitTracker {
             });
 
             if (response.ok) {
+                // Add celebration animation if habit was completed
+                if (originalState) {
+                    const habitCard = checkbox.closest('.habit-card');
+                    if (habitCard) {
+                        habitCard.classList.add('habit-completed-animation');
+                        setTimeout(() => {
+                            habitCard.classList.remove('habit-completed-animation');
+                        }, 600);
+                    }
+                }
+
                 await this.renderHabits();
                 await this.updateDashboardStats();
                 this.showNotification(
@@ -188,6 +228,11 @@ class HabitTracker {
             console.error('Error toggling habit:', error);
             checkbox.checked = !originalState;
             this.showNotification('Failed to update habit. Please try again.', 'error');
+        } finally {
+            // Re-enable the checkbox after a short delay
+            setTimeout(() => {
+                checkbox.disabled = false;
+            }, 500);
         }
     }
 
@@ -238,33 +283,39 @@ class HabitTracker {
     showNotification(message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full`;
+        notification.className = `notification fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-500 transform translate-x-full ${type}`;
 
-        // Set colors based on type
-        const colors = {
-            success: 'bg-green-500 text-white',
-            error: 'bg-red-500 text-white',
-            info: 'bg-blue-500 text-white'
+        // Add icon based on type
+        const icons = {
+            success: '🎉',
+            error: '❌',
+            info: 'ℹ️'
         };
 
-        notification.className += ` ${colors[type] || colors.info}`;
-        notification.textContent = message;
+        notification.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <span class="text-xl">${icons[type] || icons.info}</span>
+                <span class="font-medium">${message}</span>
+            </div>
+        `;
 
         document.body.appendChild(notification);
 
         // Animate in
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
+            notification.classList.add('translate-x-0');
         }, 100);
 
         // Animate out and remove
         setTimeout(() => {
+            notification.classList.remove('translate-x-0');
             notification.classList.add('translate-x-full');
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
-            }, 300);
+            }, 500);
         }, 3000);
     }
 
